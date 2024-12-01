@@ -23,7 +23,7 @@
 
     <checkstyle.skip>true</checkstyle.skip>
     
-    <endpoints.project.id>cloud-tinyldf</endpoints.project.id>
+    <endpoints.project.id>cloudtinyldf</endpoints.project.id>
   </properties>
 
   <dependencies>
@@ -95,7 +95,7 @@
         <configuration>
           <webResources>
             <resources>
-              <directory>${basedir}/src/main/webapp/WEB-INF</directory>
+              <directory>${basedir}/java/WEB-INF</directory>
               <filtering>true</filtering>
               <targetPath>WEB-INF</targetPath>
             </resources>
