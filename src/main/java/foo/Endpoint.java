@@ -31,15 +31,15 @@ public class Endpoint {
 	}
 
 	// URL follow the following form:
-	// https://cloud-tinyldf.appspot.com/_ah/api/myTinyApi/v1/addQuad?subject=Alice&predicate=knows&object=Bob
+	// https://cloud-tinyldf.appspot.com/_ah/api/myTinyApi/v1/addQuad?subject=Alice&predicate=knows&object=Bob&graph=hello
 	@ApiMethod(name = "addQuad", path = "addQuad", httpMethod = HttpMethod.GET)
-	public Entity addQuad(@Named("subject") String subject, @Named("predicate") String predicate, @Named("object") String object) throws UnauthorizedException {
+	public Entity addQuad(@Named("subject") String subject, @Named("predicate") String predicate, @Named("object") String object, @Named("graph") String graph) throws UnauthorizedException {
 
 		Entity e = new Entity("Quad");
 		e.setProperty("subject", subject);
 		e.setProperty("predicate", predicate);
 		e.setProperty("object", object);
-		e.setProperty("graph", "<http://example.org/graph3>");
+		e.setProperty("graph", graph);
 
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		datastore.put(e);
