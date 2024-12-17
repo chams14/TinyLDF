@@ -29,4 +29,23 @@ public class Endpoint {
         System.out.println("Yeah : "+user.toString());
 		return user;
 	}
+
+	// URL follow the following form:
+	// https://cloud-tinyldf.appspot.com/_ah/api/myTinyApi/v1/addQuad?subject=Alice&predicate=knows&object=Bob
+	@ApiMethod(name = "addQuad", path = "addQuad", httpMethod = HttpMethod.GET)
+	public Entity addQuad(@Named("subject") String subject, @Named("predicate") String predicate, @Named("object") String object) throws UnauthorizedException {
+
+		Entity e = new Entity("Quad");
+		e.setProperty("subject", subject);
+		e.setProperty("predicate", predicate);
+		e.setProperty("object", object);
+		e.setProperty("graph", "<http://example.org/graph3>");
+
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		datastore.put(e);
+
+		return e;
+	}
+
+	// TODO: addQuadSecure
 }
