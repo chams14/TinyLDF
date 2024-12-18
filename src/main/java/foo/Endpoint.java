@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.config.Api;
@@ -15,6 +17,8 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.PreparedQuery;
 
 import com.opencsv.CSVReader;
 
@@ -140,4 +144,24 @@ public class Endpoint {
 			return errorEntity;
 		}
 	}
+
+	// https://tinyldf-445019.ew.r.appspot.com/_ah/api/myTinyApi/v1/getQuads
+	@ApiMethod(name = "getQuads", path = "getQuads", httpMethod = HttpMethod.GET)
+    public List<Map<String, Object>> getQuads() {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Query query = new Query("Quad");
+        PreparedQuery pq = datastore.prepare(query);
+   
+        List<Map<String, Object>> results = new ArrayList<>();
+        for (Entity entity : pq.asIterable()) {
+            Map<String, Object> quad = new HashMap<>();
+            quad.put("subject", entity.getProperty("subject"));
+            quad.put("predicate", entity.getProperty("predicate"));
+            quad.put("object", entity.getProperty("object"));
+            quad.put("graph", entity.getProperty("graph"));
+            results.add(quad);
+        }
+        return results;
+    }  
+
 }
