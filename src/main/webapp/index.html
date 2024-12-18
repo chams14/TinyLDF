@@ -6,6 +6,32 @@
     <script src="https://unpkg.com/mithril/mithril.js"></script>
     <link rel="stylesheet" href="/assets/style.css">
 
+    <style>
+      /* Style the table, otherwise it overflows */
+      .triples {
+        width: 100%; /* Ensure it uses the full width of the container */
+        table-layout: fixed; /* Fix column width */
+        border-collapse: collapse; /* Remove space between borders */
+        margin: 20px 0; /* Add margin for spacing */
+      }
+
+    /* Style table cells */
+    .triples th {
+      padding: 4px; /* Add padding for readability */
+      text-align: center; /* Align text to the center */
+      font-size: 16px;
+      font-weight: bold;
+    }
+    
+    .triples td {
+      padding: 4px; /* Add padding for readability */
+      text-align: center; /* Align text to the center */
+      word-wrap: break-word; /* Allow text to wrap within cells */
+      font-size: 12px; /* Reduce font size */
+      border: 1px solid #ccc; /* Add a light border */
+    }
+  </style>
+
   </head>
   <body>
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
@@ -131,10 +157,10 @@
               m('tbody', [
                 Main.results && Main.results.map(function(result) {
                   return m('tr', [
-                    m('td', m('a', {href:"#"}, result.properties.subject)),
-                    m('td', m('a', {href:"#"}, result.properties.predicate)),
-                    m('td', m('a', {href:"#"}, result.properties.object)),
-                    m('td', m('a', {href:"#"}, result.properties.graph))
+                    m('td', m('a', {class:"uri", href: result.properties.subject, target: '_blank' }, result.properties.subject)),
+                    m('td', m('a', {class:"uri", href: result.properties.predicate, target: '_blank' }, result.properties.predicate)),
+                    m('td', m('a', {class:"uri", href: result.properties.object, target: '_blank' }, result.properties.object)),
+                    m('td', m('a', {class:"uri", href: result.properties.graph, target: '_blank' }, result.properties.graph))
                   ]);
                 })
               ])
