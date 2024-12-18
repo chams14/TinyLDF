@@ -19,7 +19,7 @@
     <script>
       var Header = { 
         user: "Guest",
-        userPhoto: "/assets/user.png",
+        userPhoto: '/assets/user.png',
         view: function(){
           return m('header',[
             m('div',{class:"connection"}, [
@@ -34,7 +34,7 @@
               
             ]),
             m('div',[
-              m('h1', "TinyLDF"),
+              m('h1', "JoTinyLDF"),
               m('div', {class:'logo'}, 
                 m("a", {href:"https://query.wikidata.org"}, 
                 m('img',{src:'/assets/logo.svg', alt:'Linked Data Fragments'}))
@@ -47,10 +47,10 @@
         view: function(){
           return m('main',[
             m('div',[
-              m('h2', m("a", {href:"https://query.wikidata.org"}, "Wikidata")),
+              m('h2', m("a", {href:"https://query.wikidata.org"}, "TinyLDF")),
+              m('h3', "Query JoTinyLDF by triple pattern"),
               m('form',[
                 m('fieldset',[
-                  m('legend', "Query Wikidata by triple pattern"),
                   m('ul', [
                     m('li',{resource:"#subject"},[
                       m('label',{for:"subject", about:"#subject"},'subject :'),
@@ -69,7 +69,7 @@
                 m('input', {type:"submit", value:"Find matching triples"})
               ])
             ]),
-            m('h3',"Matches in Wikidata for"),
+            m('h3',"Matches in JoTinyLDF for"),
             m('div', {class:'counts'},[
               "Showing triples 1 to 101 of ±",
               m('span', {datatype:"xsd:integer", content:""}), 
@@ -110,16 +110,16 @@
         view: function(){
           if(!NewQuads.authentificated){
             return [
-              m('h3',{style:'margin-top:20px'},"Insert new quads in the dataset"),
+              m('h2',{style:'margin-top:20px'},"New quads "),
               m('p', "To insert new quads, you must be authenticated !")
             ]
           } else {
             return m('div',{style:'margin-top:20px'},[
+              m('h2',{style:'margin-top:20px'},"New quads "),
+              m('h3', "Insert new quads in the dataset"),
               m('form',[
                 m('fieldset',[
-                m('legend', "Insert new quads in the dataset"),
                   m('ul', [
-                    m('h4', "Quads"),
                     m('li',{resource:"#graph"},[
                       m('label',{for:"graph", about:"#graph"},'graph :'),
                       m('input',{class:"uri", id:"graph", name:"graph", about:"graph", resource:"rdf:graph"})
@@ -167,8 +167,8 @@
           .then(data => {
             NewQuads.authentificated=true;
             console.log("User logged in : "+responsePayload.given_name);
-            Header.user = responsePayload.given_name
-            Header.userPhoto = responsePayload.picture
+            Header.user = responsePayload.given_name;
+            Header.userPhoto = responsePayload.picture;
             m.redraw();
           });
       }
