@@ -198,23 +198,20 @@ public class Endpoint {
 		return result;
 	}
 	
-	// https://tinyldf-445019.ew.r.appspot.com/_ah/api/myTinyApi/v1/getQuads
-	@ApiMethod(name = "getQuads", path = "getQuads", httpMethod = HttpMethod.GET)
-    public List<Map<String, Object>> getQuads() {
+    // https://tinyldf-445019.ew.r.appspot.com/_ah/api/myTinyApi/v1/getQuads
+    @ApiMethod(name = "getQuads", path = "getQuads", httpMethod = HttpMethod.GET)
+    public List<Entity> getQuads() {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+
         Query query = new Query("Quad");
         PreparedQuery pq = datastore.prepare(query);
+        List<Entity> results = new ArrayList<>();
    
-        List<Map<String, Object>> results = new ArrayList<>();
         for (Entity entity : pq.asIterable()) {
-            Map<String, Object> quad = new HashMap<>();
-            quad.put("subject", entity.getProperty("subject"));
-            quad.put("predicate", entity.getProperty("predicate"));
-            quad.put("object", entity.getProperty("object"));
-            quad.put("graph", entity.getProperty("graph"));
-            results.add(quad);
+            results.add(entity);
         }
         return results;
-    }  
+    }
 
 }
