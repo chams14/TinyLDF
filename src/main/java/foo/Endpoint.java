@@ -32,6 +32,8 @@ import com.opencsv.CSVReader;
     )
 
 public class Endpoint {
+	// URL follow the following form:
+	// https://cloud-tinyldf.appspot.com/_ah/api/myTinyApi/v1/Hello?access_token=...
 	@ApiMethod(name = "hello", httpMethod = HttpMethod.GET)
 	public User Hello(User user) throws UnauthorizedException {
         if (user == null) {
@@ -44,7 +46,28 @@ public class Endpoint {
 	// URL follow the following form:
 	// https://cloud-tinyldf.appspot.com/_ah/api/myTinyApi/v1/addQuad?subject=Alice&predicate=knows&object=Bob&graph=hello
 	@ApiMethod(name = "addQuad", path = "addQuad", httpMethod = HttpMethod.GET)
-	public Entity addQuad(@Named("subject") String subject, @Named("predicate") String predicate, @Named("object") String object, @Named("graph") String graph) throws UnauthorizedException {
+	public Entity addQuad(@Named("subject") String subject, @Named("predicate") String predicate, @Named("object") String object, @Named("graph") String graph) {
+		
+		Entity e = new Entity("Quad");
+		e.setProperty("subject", subject);
+		e.setProperty("predicate", predicate);
+		e.setProperty("object", object);
+		e.setProperty("graph", graph);
+
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		datastore.put(e);
+
+		return e;
+	}
+
+	// Secure version of the previous method
+	// URL follow the following form:
+	// https://cloud-tinyldf.appspot.com/_ah/api/myTinyApi/v1/addQuad?subject=Alice&predicate=knows&object=Bob&graph=hello&access_token=...
+	@ApiMethod(name = "addQuadSec", path = "addQuadSec", httpMethod = HttpMethod.GET)
+	public Entity addQuadSec(User user, @Named("subject") String subject, @Named("predicate") String predicate, @Named("object") String object, @Named("graph") String graph) throws UnauthorizedException {
+		if (user == null) {
+			throw new UnauthorizedException("Invalid credentials");
+		}
 
 		Entity e = new Entity("Quad");
 		e.setProperty("subject", subject);
@@ -58,15 +81,17 @@ public class Endpoint {
 		return e;
 	}
 
-	// TODO: addQuadSecure
-
-	// TODO: Make sure can only be run by someone logged
-	// Populate the DataStore from the dataset.csv file
-	// Be extremely carefull while calling it, if run a second time, will add the data in double
+	// Populate the DataStore from the dataset.csv file using batch put of size batchSize
+	// Be extremely carefull while calling it.
+	// If run a second time, the data will end up in double in the Datastore.
 	// URL follow the following form:
-	// https://cloud-tinyldf.appspot.com/_ah/api/myTinyApi/v1/populateDatastore?batchSize=1000
+	// https://cloud-tinyldf.appspot.com/_ah/api/myTinyApi/v1/populateDatastore?batchSize=1000&access_token=...
 	@ApiMethod(name = "populateDatastore", path = "populateDatastore", httpMethod = HttpMethod.GET)
-	public Entity populateDatastore(@Named("batchSize") int batchSize) {
+	public Entity populateDatastore(User user, @Named("batchSize") int batchSize) throws UnauthorizedException {
+		if (user == null) {
+			throw new UnauthorizedException("Invalid credentials");
+		}
+
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		String csvFile = getClass().getClassLoader().getResource("dataset.csv").getPath();
 		int totalAdded = 0;
