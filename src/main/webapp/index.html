@@ -45,8 +45,8 @@
       }
       var Main = { 
         view: function(){
-          return m('main',[
-            m('div',[
+          return m('main', [
+            m('div', [
               m('h2', m("a", {href:"https://query.wikidata.org"}, "TinyLDF")),
               m('h3', "Query JoTinyLDF by triple pattern"),
               m('form', {
@@ -73,44 +73,45 @@
 
                   // Call the API
                   m.request({
-                      method: 'GET',
-                      url: apiUrl,
+                    method: 'GET',
+                    url: apiUrl,
                   })
                   .then(function (response) {
-                      console.log("Response:", response); // Handle the response
-                      // alert("API call successful. Check console for details.");
+                    console.log("Response:", response); // Handle the response
+                    // Update the view with results
+                    Main.results = response.items || [];
+                    m.redraw();
                   })
                   .catch(function (error) {
-                      console.error("Error:", error); // Handle errors
-                      // alert("API call failed. Check console for details.");
+                    console.error("Error:", error); // Handle errors
                   });
                 }
-              },[
-                m('fieldset',[
+              }, [
+                m('fieldset', [
                   m('ul', [
-                    m('li',{resource:"#subject"},[
-                      m('label',{for:"subject", about:"#subject"},'subject :'),
-                      m('input',{class:"uri", id:"subject", name:"subject", about:"subject", resource:"rdf:subject"})
+                    m('li', {resource:"#subject"}, [
+                      m('label', {for:"subject", about:"#subject"}, 'subject :'),
+                      m('input', {class:"uri", id:"subject", name:"subject", about:"subject", resource:"rdf:subject"})
                     ]),
-                    m('li',{resource:"#predicate"},[
-                      m('label',{for:"predicate", about:"#predicate"},'predicate :'),
-                      m('input',{class:"uri", id:"predicate", name:"predicate", about:"predicate", resource:"rdf:predicate"})
+                    m('li', {resource:"#predicate"}, [
+                      m('label', {for:"predicate", about:"#predicate"}, 'predicate :'),
+                      m('input', {class:"uri", id:"predicate", name:"predicate", about:"predicate", resource:"rdf:predicate"})
                     ]),
-                    m('li',{resource:"#object"},[
-                      m('label',{for:"object", about:"#object"},'object :'),
-                      m('input',{class:"uri", id:"object", name:"object", about:"object", resource:"rdf:object"})
+                    m('li', {resource:"#object"}, [
+                      m('label', {for:"object", about:"#object"}, 'object :'),
+                      m('input', {class:"uri", id:"object", name:"object", about:"object", resource:"rdf:object"})
                     ]),
-                    m('li',{resource:"#graph"},[
-                      m('label',{for:"graph", about:"#graph"},'graph :'),
-                      m('input',{class:"uri", id:"graph", name:"graph", about:"graph", resource:"rdf:graph"})
-                    ]),
+                    m('li', {resource:"#graph"}, [
+                      m('label', {for:"graph", about:"#graph"}, 'graph :'),
+                      m('input', {class:"uri", id:"graph", name:"graph", about:"graph", resource:"rdf:graph"})
+                    ])
                   ])  
                 ]),
                 m('input', {type:"submit", value:"Find matching triples"})
               ])
             ]),
-            m('h3',"Matches in JoTinyLDF for"),
-            m('div', {class:'counts'},[
+            m('h3', "Matches in JoTinyLDF for"),
+            m('div', {class:'counts'}, [
               "Showing triples 1 to 101 of ±",
               m('span', {datatype:"xsd:integer", content:""}), 
               " with ",
@@ -128,24 +129,21 @@
                 ])
               ]),
               m('tbody', [
-                m('tr', [
-                  m('td', m('a', {href:""}, "Test")),
-                  m('td', m('a', {href:""}, "Test")),
-                  m('td', m('a', {href:""}, "Test")),
-                  m('td', m('a', {href:""}, "Test"))
-                ]),
-                m('tr', [
-                  m('td', m('a', {href:""}, "Test")),
-                  m('td', m('a', {href:""}, "Test")),
-                  m('td', m('a', {href:""}, "Test")),
-                  m('td', m('a', {href:""}, "Test"))
-                ])
-              ]),
+                Main.results && Main.results.map(function(result) {
+                  return m('tr', [
+                    m('td', m('a', {href:"#"}, result.properties.subject)),
+                    m('td', m('a', {href:"#"}, result.properties.predicate)),
+                    m('td', m('a', {href:"#"}, result.properties.object)),
+                    m('td', m('a', {href:"#"}, result.properties.graph))
+                  ]);
+                })
+              ])
             ]),
             m("a", {class:"next", href:""}, "next"),
-          ])
-        }
-      }
+          ]);
+        },
+        results: []
+      };
 
       var NewQuads = {
         authentificated:false,
