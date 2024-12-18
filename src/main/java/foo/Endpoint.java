@@ -140,4 +140,55 @@ public class Endpoint {
 			return errorEntity;
 		}
 	}
+
+	// URL follow the following form:
+	// https://cloud-tinyldf.appspot.com/_ah/api/myTinyApi/v1/ldf?predicate=http%3A%2F%2Fexample.org%2Fnuts3_population&graph=http%3A%2F%2Fexample.org%2Fgraph%2F2024_medalists_all
+	@ApiMethod(name = "ldf", path = "ldf", httpMethod = HttpMethod.GET)
+	public List<Entity> ldf(
+    @Nullable @Named("subject") String subject, 
+    @Nullable @Named("predicate") String predicate, 
+    @Nullable @Named("object") String object, 
+    @Nullable @Named("graph") String graph) {
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		
+		// Initialize the base query
+		Query query = new Query("Quad");
+
+		// Create a list to hold query filters
+		List<Query.Filter> filters = new ArrayList<>();
+	
+		// Add filters if the parameter is present
+		if (subject != null && !subject.isEmpty()) {
+			filters.add(new Query.FilterPredicate("subject", Query.FilterOperator.EQUAL, subject));
+		}
+		if (predicate != null && !predicate.isEmpty()) {
+			filters.add(new Query.FilterPredicate("predicate", Query.FilterOperator.EQUAL, predicate));
+		}
+		if (object != null && !object.isEmpty()) {
+			filters.add(new Query.FilterPredicate("object", Query.FilterOperator.EQUAL, object));
+		}
+		if (graph != null && !graph.isEmpty()) {
+			filters.add(new Query.FilterPredicate("graph", Query.FilterOperator.EQUAL, graph));
+		}
+	
+		// If present, combine filters with AND
+		if (!filters.isEmpty()) {
+			Query.Filter compositeFilter;
+			if (filters.size() == 1) {
+				// Only one filter
+				compositeFilter = filters.get(0);
+			} else {
+				// Multiple filters combined with AND
+				compositeFilter = Query.CompositeFilterOperator.and(filters);
+			}
+			query.setFilter(compositeFilter);
+		}
+		// Else equivalent to SELECT *
+	
+		// Execute the query		
+		PreparedQuery preparedQuery = datastore.prepare(query);
+	
+		List<Entity> result = preparedQuery.asList(FetchOptions.Builder.withLimit(50));
+		return result;
+	}
 }
