@@ -14,12 +14,15 @@ import com.google.api.server.spi.config.ApiMethod.HttpMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.config.Nullable;
+import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.UnauthorizedException;
+import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.QueryResultList;
 import com.google.appengine.api.datastore.PreparedQuery;
 
 import com.opencsv.CSVReader;
@@ -150,11 +153,12 @@ public class Endpoint {
 	// URL follow the following form:
 	// https://cloud-tinyldf.appspot.com/_ah/api/myTinyApi/v1/ldf?predicate=http%3A%2F%2Fexample.org%2Fnuts3_population&graph=http%3A%2F%2Fexample.org%2Fgraph%2F2024_medalists_all
 	@ApiMethod(name = "ldf", path = "ldf", httpMethod = HttpMethod.GET)
-	public List<Entity> ldf(
+	public CollectionResponse<Entity> ldf(
     @Nullable @Named("subject") String subject,
     @Nullable @Named("predicate") String predicate,
     @Nullable @Named("object") String object,
-    @Nullable @Named("graph") String graph) {
+    @Nullable @Named("graph") String graph,
+	@Nullable @Named("cursor") String cursorString) {
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		
 		// Initialize the base query
@@ -190,12 +194,29 @@ public class Endpoint {
 			query.setFilter(compositeFilter);
 		}
 		// Else equivalent to SELECT *
-	
-		// Execute the query		
+
+		// Prepare the query
 		PreparedQuery preparedQuery = datastore.prepare(query);
+
+		// Limit to 50 results per page
+		FetchOptions fetchOptions = FetchOptions.Builder.withLimit(50);
+
+		// Use the cursor if provided
+		if (cursorString != null && !cursorString.isEmpty()) {
+			fetchOptions.startCursor(Cursor.fromWebSafeString(cursorString));
+		}
 	
-		List<Entity> result = preparedQuery.asList(FetchOptions.Builder.withLimit(50));
-		return result;
+		// Execute the query and retrieve results
+		QueryResultList<Entity> results = preparedQuery.asQueryResultList(fetchOptions);
+	
+		// Get the next page cursor
+		String nextCursorString = results.getCursor().toWebSafeString();
+	
+		// Return results along with the cursor for the next page
+		return CollectionResponse.<Entity>builder()
+			.setItems(results)
+			.setNextPageToken(nextCursorString)
+			.build();
 	}
 	
     // https://tinyldf-445019.ew.r.appspot.com/_ah/api/myTinyApi/v1/getQuads
