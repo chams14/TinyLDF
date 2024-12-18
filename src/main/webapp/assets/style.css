@@ -57,13 +57,9 @@ header .logo img {
 }
 
 /* Main */
-h2, h3 {
-  margin: .4em 0 .2em;
-  overflow: hidden;
-}
-
 h2 {
   color: #be1622;
+  overflow: hidden;
 }
 
 h3 {
@@ -93,7 +89,7 @@ input {
 
 fieldset {
   border: none;
-  padding: .5em 0 0 20px;
+  padding: 1em 0 0 20px;
 }
 
 fieldset ul {
@@ -114,13 +110,6 @@ fieldset input {
 fieldset, ul.triples {
   padding: .5em 0;
   margin: 0;
-}
-
-legend {
-  font-size: 1.17em;
-  font-weight: bold;
-  padding: 0;
-  margin-left: 0px;
 }
 
 ul {
@@ -212,14 +201,6 @@ tbody tr:nth-child(odd) {
 }
 
   /* new quads*/
-h4 {
-  margin: 0 0 .2em;
-  overflow: hidden;
-  color:#be1622;
-  margin-left: -20px;
-  margin-top:10px;
-}
-
 fieldset a{
   color: gray;
   text-decoration:underline;

@@ -10,6 +10,7 @@
     <include path="/**.js" />
     <include path="/**.css" />
     <include path="/**.svg" />
+    <include path="/**.png" />
     <include path="/**.ico" />
   </static-files>
   <system-properties>
