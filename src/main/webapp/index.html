@@ -49,7 +49,43 @@
             m('div',[
               m('h2', m("a", {href:"https://query.wikidata.org"}, "TinyLDF")),
               m('h3', "Query JoTinyLDF by triple pattern"),
-              m('form',[
+              m('form', {
+                onsubmit: function (e) {
+                  e.preventDefault(); // Prevent the default form submission
+
+                  // Gather input values
+                  const subject = document.getElementById("subject").value.trim();
+                  const predicate = document.getElementById("predicate").value.trim();
+                  const object = document.getElementById("object").value.trim();
+                  const graph = document.getElementById("graph").value.trim();
+
+                  // Construct the URL dynamically
+                  let apiUrl = `${window.location.origin}/_ah/api/myTinyApi/v1/ldf?`;
+                  const params = new URLSearchParams();
+
+                  if (subject) params.append('subject', subject);
+                  if (predicate) params.append('predicate', predicate);
+                  if (object) params.append('object', object);
+                  if (graph) params.append('graph', graph);
+
+                  apiUrl += params.toString(); // Combine the base URL with the query parameters
+                  console.log("apiCall:", apiUrl);
+
+                  // Call the API
+                  m.request({
+                      method: 'GET',
+                      url: apiUrl,
+                  })
+                  .then(function (response) {
+                      console.log("Response:", response); // Handle the response
+                      // alert("API call successful. Check console for details.");
+                  })
+                  .catch(function (error) {
+                      console.error("Error:", error); // Handle errors
+                      // alert("API call failed. Check console for details.");
+                  });
+                }
+              },[
                 m('fieldset',[
                   m('ul', [
                     m('li',{resource:"#subject"},[
