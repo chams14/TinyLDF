@@ -71,47 +71,17 @@
       }
       var Main = { 
         view: function(){
+          const pageSize = 50;
+          // Ex: Display result from 51 to 100
+          const startIndex = Main.currentPage * pageSize + 1;
+          const endIndex = startIndex + Main.results.length - 1;
+
           return m('main', [
             m('div', [
               m('h2', m("a", {href:"https://query.wikidata.org"}, "TinyLDF")),
               m('h3', "Query JoTinyLDF by triple pattern"),
               m('form', {
-                onsubmit: function (e) {
-                  e.preventDefault(); // Prevent the default form submission
-
-                  // Gather input values
-                  const subject = document.getElementById("subject").value.trim();
-                  const predicate = document.getElementById("predicate").value.trim();
-                  const object = document.getElementById("object").value.trim();
-                  const graph = document.getElementById("graph").value.trim();
-
-                  // Construct the URL dynamically
-                  let apiUrl = `${window.location.origin}/_ah/api/myTinyApi/v1/ldf?`;
-                  const params = new URLSearchParams();
-
-                  if (subject) params.append('subject', subject);
-                  if (predicate) params.append('predicate', predicate);
-                  if (object) params.append('object', object);
-                  if (graph) params.append('graph', graph);
-
-                  apiUrl += params.toString(); // Combine the base URL with the query parameters
-                  console.log("apiCall:", apiUrl);
-
-                  // Call the API
-                  m.request({
-                    method: 'GET',
-                    url: apiUrl,
-                  })
-                  .then(function (response) {
-                    console.log("Response:", response); // Handle the response
-                    // Update the view with results
-                    Main.results = response.items || [];
-                    m.redraw();
-                  })
-                  .catch(function (error) {
-                    console.error("Error:", error); // Handle errors
-                  });
-                }
+                onsubmit: Main.handleSubmit
               }, [
                 m('fieldset', [
                   m('ul', [
@@ -137,13 +107,25 @@
               ])
             ]),
             m('h3', "Matches in JoTinyLDF for"),
-            m('div', {class:'counts'}, [
-              "Showing triples 1 to 101 of ±",
-              m('span', {datatype:"xsd:integer", content:""}), 
-              " with ",
-              m('span', {datatype:"xsd:integer", content:""}),
-              " triples per page.",
-              m("a", {class:"next", href:""}, "next")
+            Main.results.length !== 0 &&
+            m('div', { class: 'counts' }, [
+                "Showing triples ",
+                m('span', { datatype: "xsd:integer" }, startIndex),
+                " to ",
+                m('span', { datatype: "xsd:integer" }, endIndex),
+                " with ",
+                m('span', { datatype: "xsd:integer" }, Main.results.length),
+                " quads per page.",
+                Main.results.length == 50 &&
+                m("a", {
+                    class: "next",
+                    href: "#",
+                    onclick: (e) => {
+                        e.preventDefault();
+                        // Fetch next page using the cursor
+                        Main.fetchNextPage();
+                    }
+                }, "next"),
             ]),
             m('table', {class:'triples'}, [
               m('thead', [
@@ -165,11 +147,76 @@
                 })
               ])
             ]),
-            m("a", {class:"next", href:""}, "next"),
+            Main.results.length == 50 &&
+                m("a", {
+                    class: "next",
+                    href: "#",
+                    onclick: (e) => {
+                        e.preventDefault();
+                        // Fetch next page using the cursor
+                        Main.fetchNextPage();
+                    }
+                }, "next"),
           ]);
         },
-        results: []
-      };
+
+        // Store state
+        results: [],
+        nextCursor: null,
+        currentPage: -1,
+
+        // Fetch data function with support for pagination
+        fetchData: function(subject, predicate, object, graph, cursor = null) {
+          // Construct API URL with query parameters
+          let apiUrl = `${window.location.origin}/_ah/api/myTinyApi/v1/ldf?`;
+          const params = new URLSearchParams();
+
+          if (subject) params.append('subject', subject);
+          if (predicate) params.append('predicate', predicate);
+          if (object) params.append('object', object);
+          if (graph) params.append('graph', graph);
+          if (cursor) params.append('cursor', cursor);
+
+          apiUrl += params.toString(); // Combine the base URL with the query parameters
+          console.log("apiCall:", apiUrl);
+
+          // Call the API
+          m.request({
+            method: 'GET',
+            url: apiUrl,
+          })
+            .then(function (response) {
+              console.log("Response:", response); // Handle the response
+              // Update the view with results
+              Main.results = response.items || []; // Populate quads
+              Main.nextCursor = response.nextPageToken || null;
+              Main.currentPage = (cursor && Main.results.length !== 0) ? Main.currentPage + 1 : 0; // Update the current page
+              m.redraw();
+            })
+            .catch(function (error) {
+              console.error("Error:", error); // Handle errors
+            });
+        },
+
+        // Handle form submission
+        handleSubmit: function (e) {
+        e.preventDefault();
+          const subject = document.getElementById("subject").value.trim();
+          const predicate = document.getElementById("predicate").value.trim();
+          const object = document.getElementById("object").value.trim();
+          const graph = document.getElementById("graph").value.trim();
+          Main.fetchData(subject, predicate, object, graph);
+        },
+
+        // Fetch the next page of data
+        fetchNextPage: function () {
+          const subject = document.getElementById("subject").value.trim();
+          const predicate = document.getElementById("predicate").value.trim();
+          const object = document.getElementById("object").value.trim();
+          const graph = document.getElementById("graph").value.trim();
+          Main.fetchData(subject, predicate, object, graph, Main.nextCursor);
+        }
+      }
 
       var NewQuads = {
         authentificated:false,
