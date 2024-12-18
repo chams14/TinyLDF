@@ -13,10 +13,12 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiMethod.HttpMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.config.Named;
+import com.google.api.server.spi.config.Nullable;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.PreparedQuery;
 
@@ -149,9 +151,9 @@ public class Endpoint {
 	// https://cloud-tinyldf.appspot.com/_ah/api/myTinyApi/v1/ldf?predicate=http%3A%2F%2Fexample.org%2Fnuts3_population&graph=http%3A%2F%2Fexample.org%2Fgraph%2F2024_medalists_all
 	@ApiMethod(name = "ldf", path = "ldf", httpMethod = HttpMethod.GET)
 	public List<Entity> ldf(
-    @Nullable @Named("subject") String subject, 
-    @Nullable @Named("predicate") String predicate, 
-    @Nullable @Named("object") String object, 
+    @Nullable @Named("subject") String subject,
+    @Nullable @Named("predicate") String predicate,
+    @Nullable @Named("object") String object,
     @Nullable @Named("graph") String graph) {
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		
@@ -195,6 +197,7 @@ public class Endpoint {
 		List<Entity> result = preparedQuery.asList(FetchOptions.Builder.withLimit(50));
 		return result;
 	}
+	
 	// https://tinyldf-445019.ew.r.appspot.com/_ah/api/myTinyApi/v1/getQuads
 	@ApiMethod(name = "getQuads", path = "getQuads", httpMethod = HttpMethod.GET)
     public List<Map<String, Object>> getQuads() {
