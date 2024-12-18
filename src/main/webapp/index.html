@@ -64,6 +64,10 @@
                       m('label',{for:"object", about:"#object"},'object :'),
                       m('input',{class:"uri", id:"object", name:"object", about:"object", resource:"rdf:object"})
                     ]),
+                    m('li',{resource:"#graph"},[
+                      m('label',{for:"graph", about:"#graph"},'graph :'),
+                      m('input',{class:"uri", id:"graph", name:"graph", about:"graph", resource:"rdf:graph"})
+                    ]),
                   ])  
                 ]),
                 m('input', {type:"submit", value:"Find matching triples"})
@@ -83,16 +87,19 @@
                 m('tr', [
                   m('th', "Subject"),
                   m('th', "Predicate"),
-                  m('th', "Object")
+                  m('th', "Object"),
+                  m('th', "Graph")
                 ])
               ]),
               m('tbody', [
                 m('tr', [
                   m('td', m('a', {href:""}, "Test")),
                   m('td', m('a', {href:""}, "Test")),
+                  m('td', m('a', {href:""}, "Test")),
                   m('td', m('a', {href:""}, "Test"))
                 ]),
                 m('tr', [
+                  m('td', m('a', {href:""}, "Test")),
                   m('td', m('a', {href:""}, "Test")),
                   m('td', m('a', {href:""}, "Test")),
                   m('td', m('a', {href:""}, "Test"))
@@ -120,10 +127,6 @@
               m('form',[
                 m('fieldset',[
                   m('ul', [
-                    m('li',{resource:"#graph"},[
-                      m('label',{for:"graph", about:"#graph"},'graph :'),
-                      m('input',{class:"uri", id:"graph", name:"graph", about:"graph", resource:"rdf:graph"})
-                    ]),
                     m('li',{resource:"#subject"},[
                       m('label',{for:"subject", about:"#subject"},'subject :'),
                       m('input',{class:"uri", id:"subject", name:"subject", about:"subject", resource:"rdf:subject"})
@@ -135,6 +138,10 @@
                     m('li',{resource:"#object"},[
                       m('label',{for:"object", about:"#object"},'object :'),
                       m('input',{class:"uri", id:"object", name:"object", about:"object", resource:"rdf:object"})
+                    ]),
+                    m('li',{resource:"#graph"},[
+                      m('label',{for:"graph", about:"#graph"},'graph :'),
+                      m('input',{class:"uri", id:"graph", name:"graph", about:"graph", resource:"rdf:graph"})
                     ]),
                   ])  
                 ]),
