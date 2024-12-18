@@ -166,7 +166,8 @@
           .then(response => response.text())
           .then(data => {
             NewQuads.authentificated=true;
-            console.log("User logged in : "+responsePayload.given_name);
+            console.log("User logged in : "+ responsePayload.given_name);
+            console.log("Token : "+ response.credential);
             Header.user = responsePayload.given_name;
             Header.userPhoto = responsePayload.picture;
             m.redraw();
