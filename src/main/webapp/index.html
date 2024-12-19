@@ -127,6 +127,7 @@
                     }
                 }, "next"),
             ]),
+            m('div', { class: 'execution-time' }, `Execution time (ms): ${Main.executionTime}`),
             m('table', {class:'triples'}, [
               m('thead', [
                 m('tr', [
@@ -164,9 +165,11 @@
         results: [],
         nextCursor: null,
         currentPage: -1,
+        executionTime: 0,
 
         // Fetch data function with support for pagination
         fetchData: function(subject, predicate, object, graph, cursor = null) {
+          const startTime = performance.now();
           // Construct API URL with query parameters
           let apiUrl = `${window.location.origin}/_ah/api/myTinyApi/v1/ldf?`;
           const params = new URLSearchParams();
@@ -191,6 +194,8 @@
               Main.results = response.items || []; // Populate quads
               Main.nextCursor = response.nextPageToken || null;
               Main.currentPage = (cursor && Main.results.length !== 0) ? Main.currentPage + 1 : 0; // Update the current page
+              const endTime = performance.now();
+              Main.executionTime = (endTime - startTime).toFixed(2);
               m.redraw();
             })
             .catch(function (error) {
