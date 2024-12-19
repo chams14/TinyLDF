@@ -9,14 +9,17 @@ C'est un simple serveur LDF qui permet de traiter les requêtes de modèles trip
 
 Le dataset provient de [notre projet de web sémantique](https://github.com/JulienBacquart/WebSemantique) et contient des données relatives aux Jeux Olympiques d'été 2024.  
 
-Il s'agit de la sémantisation du dataset [OlympicsGoNUTS](https://github.com/EDJNet/OlympicsGoNUTS).
+Il s'agit de la sémantisation du dataset [OlympicsGoNUTS](https://github.com/EDJNet/OlympicsGoNUTS).  
 Ce dataset comprend 40 935 triplets, fournissant des données sur :  
 - Les médailles par discipline, pays et par athlète.
 - Les données NUTS relatives aux lieux de naissance des athlètes, notamment la population et le PIB.  
 
 Pour plus de détails sur les données originales, consultez : [OlympicsGoNUTS](https://edjnet.github.io/OlympicsGoNUTS/)
 
-## Auteur (M1 DS)
-Maëlle LE LANNIC <br>
-Thomas GIRAUD <br>
-Julien BACQUART <br>
+## Auteurs (M1 DS)
+
+| Groupe       |
+| ---------------- |
+| Maëlle LE LANNIC |
+| Thomas GIRAUD   |
+| Julien BACQUART  |
