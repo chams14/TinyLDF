@@ -10,6 +10,10 @@
   <body>
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <div id="g_id_onload"
+         data-client_id="1070713493928-c7g4vl5i7k6vcbaasgihfnajktpai0ut.apps.googleusercontent.com"
+         data-callback="handleCredentialResponse">
+    </div>
     <div id="tiny"></div>
 
     <script>
@@ -299,8 +303,8 @@
           .then(data => {
             NewQuads.authentificated=true;
             NewQuads.accessToken = response.credential;
-            console.log("User logged in : "+ responsePayload.given_name);
-            console.log("Token : "+ response.credential);
+            /*console.log("User logged in : "+ responsePayload.given_name);
+            console.log("Token : "+ response.credential);*/
             Header.user = responsePayload.given_name;
             Header.userPhoto = responsePayload.picture;
             m.redraw();

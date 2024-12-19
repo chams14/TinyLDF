@@ -30,8 +30,8 @@ import com.opencsv.CSVReader;
 
 @Api(name = "myTinyApi",
 	version = "v1",
-	audiences = "588494979006-egm3iejpi8kbtc25i6691uaevhkfjtr3.apps.googleusercontent.com",
-	clientIds = {"588494979006-egm3iejpi8kbtc25i6691uaevhkfjtr3.apps.googleusercontent.com",
+	audiences = "1070713493928-2131512am08sqkkbu9bt9l6236luga1k.apps.googleusercontent.com",
+	clientIds = {"1070713493928-2131512am08sqkkbu9bt9l6236luga1k.apps.googleusercontent.com",
 	"1070713493928-c7g4vl5i7k6vcbaasgihfnajktpai0ut.apps.googleusercontent.com"},
 	namespace =
      	@ApiNamespace(
@@ -95,7 +95,8 @@ public class Endpoint {
 	// If run a second time, the data will end up in double in the Datastore.
 	// URL follow the following form:
 	// https://cloud-tinyldf.appspot.com/_ah/api/myTinyApi/v1/populateDatastore?batchSize=1000&access_token=...
-	@ApiMethod(name = "populateDatastore", path = "populateDatastore", httpMethod = HttpMethod.GET)
+	
+	/*@ApiMethod(name = "populateDatastore", path = "populateDatastore", httpMethod = HttpMethod.GET)
 	public Entity populateDatastore(User user, @Named("batchSize") int batchSize) throws UnauthorizedException {
 		if (user == null) {
 			throw new UnauthorizedException("Invalid credentials");
@@ -148,7 +149,7 @@ public class Endpoint {
 			errorEntity.setProperty("message", "Error processing file: " + e.getMessage());
 			return errorEntity;
 		}
-	}
+	}*/
 
 	// URL follow the following form:
 	// https://cloud-tinyldf.appspot.com/_ah/api/myTinyApi/v1/ldf?predicate=http%3A%2F%2Fexample.org%2Fnuts3_population&graph=http%3A%2F%2Fexample.org%2Fgraph%2F2024_medalists_all
