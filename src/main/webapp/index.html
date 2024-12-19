@@ -262,7 +262,7 @@
                   }
 
                   const accessToken = 'your_access_token_here'; // Replace with actual access token management
-                  const apiUrl = `${window.location.origin}/_ah/api/myTinyApi/v1/addQuad?subject=${encodeURIComponent(subject)}&predicate=${encodeURIComponent(predicate)}&object=${encodeURIComponent(object)}&graph=${encodeURIComponent(graph)}`;
+                  const apiUrl = `${window.location.origin}/_ah/api/myTinyApi/v1/addQuadSec?subject=${encodeURIComponent(subject)}&predicate=${encodeURIComponent(predicate)}&object=${encodeURIComponent(object)}&graph=${encodeURIComponent(graph)}&access_token=${NewQuads.accessToken}`;
 
                   console.log("API Call:", apiUrl);
 
@@ -328,6 +328,7 @@
           .then(response => response.text())
           .then(data => {
             NewQuads.authentificated=true;
+            NewQuads.accessToken = response.credential;
             console.log("User logged in : "+ responsePayload.given_name);
             console.log("Token : "+ response.credential);
             Header.user = responsePayload.given_name;
