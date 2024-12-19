@@ -37,7 +37,7 @@
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <div id="g_id_onload"
-         data-client_id="1070713493928-c7g4vl5i7k6vcbaasgihfnajktpai0ut.apps.googleusercontent.com"
+         data-client_id="588494979006-egm3iejpi8kbtc25i6691uaevhkfjtr3.apps.googleusercontent.com"
          data-callback="handleCredentialResponse">
     </div>
     <div id="tiny"></div>
@@ -224,45 +224,88 @@
       }
 
       var NewQuads = {
-        authentificated:false,
+        authentificated: false,
 
-        view: function(){
-          if(!NewQuads.authentificated){
+        view: function() {
+          if (!NewQuads.authentificated) {
             return [
-              m('h2',{style:'margin-top:20px'},"New quads "),
+              m('h2', { style: 'margin-top:20px' }, "New quads "),
               m('p', "To insert new quads, you must be authenticated !")
-            ]
+            ];
           } else {
-            return m('div',{style:'margin-top:20px'},[
-              m('h2',{style:'margin-top:20px'},"New quads "),
+            return m('div', { style: 'margin-top:20px' }, [
+              m('h2', { style: 'margin-top:20px' }, "New quads "),
               m('h3', "Insert new quads in the dataset"),
-              m('form',[
-                m('fieldset',[
+              m('form', {
+                onsubmit: function(e) {
+                  e.preventDefault();
+                  const subject = document.getElementById("subject2").value.trim();
+                  const predicate = document.getElementById("predicate2").value.trim();
+                  const object = document.getElementById("object2").value.trim();
+                  const graph = document.getElementById("graph2").value.trim();
+
+                  if (!subject) {
+                    alert("The 'subject' field cannot be empty");
+                    return;
+                  }
+                  if (!predicate) {
+                    alert("The 'predicate' field cannot be empty");
+                    return;
+                  }
+                  if (!object) {
+                    alert("The 'object' field cannot be empty");
+                    return;
+                  }
+                  if (!graph) {
+                    alert("The 'graph' field cannot be empty");
+                    return;
+                  }
+
+                  const accessToken = 'your_access_token_here'; // Replace with actual access token management
+                  const apiUrl = `${window.location.origin}/_ah/api/myTinyApi/v1/addQuad?subject=${encodeURIComponent(subject)}&predicate=${encodeURIComponent(predicate)}&object=${encodeURIComponent(object)}&graph=${encodeURIComponent(graph)}`;
+
+                  console.log("API Call:", apiUrl);
+
+                  m.request({
+                    method: 'GET',
+                    url: apiUrl
+                  })
+                    .then(function(response) {
+                      console.log("Response:", response);
+                      alert("Quad added successfully!");
+                    })
+                    .catch(function(error) {
+                      console.error("Error:", error);
+                      alert("Failed to add quad. Please try again.");
+                    });
+                }
+              }, [
+                m('fieldset', [
                   m('ul', [
-                    m('li',{resource:"#subject"},[
-                      m('label',{for:"subject", about:"#subject"},'subject :'),
-                      m('input',{class:"uri", id:"subject", name:"subject", about:"subject", resource:"rdf:subject"})
+                    m('li', { resource: "#subject" }, [
+                      m('label', { for: "subject2", about: "#subject2" }, 'subject :'),
+                      m('input', { class: "uri", id: "subject2", name: "subject2", about: "subject2", resource: "rdf:subject" })
                     ]),
-                    m('li',{resource:"#predicate"},[
-                      m('label',{for:"predicate", about:"#predicate"},'predicate :'),
-                      m('input',{class:"uri", id:"predicate", name:"predicate", about:"predicate", resource:"rdf:predicate"})
+                    m('li', { resource: "#predicate" }, [
+                      m('label', { for: "predicate2", about: "#predicate2" }, 'predicate :'),
+                      m('input', { class: "uri", id: "predicate2", name: "predicate2", about: "predicate2", resource: "rdf:predicate" })
                     ]),
-                    m('li',{resource:"#object"},[
-                      m('label',{for:"object", about:"#object"},'object :'),
-                      m('input',{class:"uri", id:"object", name:"object", about:"object", resource:"rdf:object"})
+                    m('li', { resource: "#object" }, [
+                      m('label', { for: "object2", about: "#object2" }, 'object :'),
+                      m('input', { class: "uri", id: "object2", name: "object2", about: "object2", resource: "rdf:object" })
                     ]),
-                    m('li',{resource:"#graph"},[
-                      m('label',{for:"graph", about:"#graph"},'graph :'),
-                      m('input',{class:"uri", id:"graph", name:"graph", about:"graph", resource:"rdf:graph"})
+                    m('li', { resource: "#graph" }, [
+                      m('label', { for: "graph2", about: "#graph2" }, 'graph :'),
+                      m('input', { class: "uri", id: "graph2", name: "graph2", about: "graph2", resource: "rdf:graph" })
                     ]),
-                  ])  
+                  ])
                 ]),
-                m('input', {type:"submit", value:"Insert"})
+                m('input', { type: "submit", value: "Insert" })
               ])
-            ])
+            ]);
           }
         }
-      }
+      };
 
       var Footer = { 
         view: function(){

@@ -30,8 +30,8 @@ import com.opencsv.CSVReader;
 
 @Api(name = "myTinyApi",
 	version = "v1",
-	audiences = "1070713493928-2131512am08sqkkbu9bt9l6236luga1k.apps.googleusercontent.com",
-	clientIds = {"1070713493928-2131512am08sqkkbu9bt9l6236luga1k.apps.googleusercontent.com",
+	audiences = "588494979006-egm3iejpi8kbtc25i6691uaevhkfjtr3.apps.googleusercontent.com",
+	clientIds = {"588494979006-egm3iejpi8kbtc25i6691uaevhkfjtr3.apps.googleusercontent.com",
 	"1070713493928-c7g4vl5i7k6vcbaasgihfnajktpai0ut.apps.googleusercontent.com"},
 	namespace =
      	@ApiNamespace(
@@ -161,6 +161,8 @@ public class Endpoint {
 	@Nullable @Named("cursor") String cursorString) {
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		
+		long startTime = System.currentTimeMillis();
+
 		// Initialize the base query
 		Query query = new Query("Quad");
 
@@ -211,6 +213,9 @@ public class Endpoint {
 	
 		// Get the next page cursor
 		String nextCursorString = results.getCursor().toWebSafeString();
+
+		long endTime = System.currentTimeMillis();
+		long executionTime = endTime - startTime;
 	
 		// Return results along with the cursor for the next page
 		return CollectionResponse.<Entity>builder()
