@@ -42,9 +42,14 @@
             ])
           ])
         }
-      }
+      };
 
       var Main = { 
+        oninit: function() {
+          // Display all quads on loading
+          Main.fetchData("", "", "", "");
+        },
+
         view: function(){
           const pageSize = 50;
           // Ex: Display result from 51 to 100
@@ -151,7 +156,6 @@
 
         // Fetch data function with support for pagination
         fetchData: function(subject, predicate, object, graph, cursor = null) {
-          const startTime = performance.now();
           // Construct API URL with query parameters
           let apiUrl = `${window.location.origin}/_ah/api/myTinyApi/v1/ldf?`;
           const params = new URLSearchParams();
@@ -166,6 +170,7 @@
           console.log("apiCall:", apiUrl);
 
           // Call the API
+          const startTime = performance.now();
           m.request({
             method: 'GET',
             url: apiUrl,
@@ -187,7 +192,7 @@
 
         // Handle form submission
         handleSubmit: function (e) {
-        e.preventDefault();
+          e.preventDefault();
           const subject = document.getElementById("subject").value.trim();
           const predicate = document.getElementById("predicate").value.trim();
           const object = document.getElementById("object").value.trim();
