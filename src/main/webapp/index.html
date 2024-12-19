@@ -43,6 +43,7 @@
           ])
         }
       }
+
       var Main = { 
         view: function(){
           const pageSize = 50;
@@ -52,87 +53,94 @@
 
           return m('main', [
             m('div', [
-              m('h2', m("a", {href:"https://query.wikidata.org"}, "TinyLDF")),
+              m('h2', m("a", { href: "https://query.wikidata.org" }, "TinyLDF")),
               m('h3', "Query JoTinyLDF by triple pattern"),
               m('form', {
-                onsubmit: Main.handleSubmit
+                  onsubmit: Main.handleSubmit
               }, [
-                m('fieldset', [
-                  m('ul', [
-                    m('li', {resource:"#subject"}, [
-                      m('label', {for:"subject", about:"#subject"}, 'subject :'),
-                      m('input', {class:"uri", id:"subject", name:"subject", about:"subject", resource:"rdf:subject"})
-                    ]),
-                    m('li', {resource:"#predicate"}, [
-                      m('label', {for:"predicate", about:"#predicate"}, 'predicate :'),
-                      m('input', {class:"uri", id:"predicate", name:"predicate", about:"predicate", resource:"rdf:predicate"})
-                    ]),
-                    m('li', {resource:"#object"}, [
-                      m('label', {for:"object", about:"#object"}, 'object :'),
-                      m('input', {class:"uri", id:"object", name:"object", about:"object", resource:"rdf:object"})
-                    ]),
-                    m('li', {resource:"#graph"}, [
-                      m('label', {for:"graph", about:"#graph"}, 'graph :'),
-                      m('input', {class:"uri", id:"graph", name:"graph", about:"graph", resource:"rdf:graph"})
-                    ])
-                  ])  
-                ]),
-                m('input', {type:"submit", value:"Find matching triples"})
+                  m('fieldset', [
+                      m('ul', [
+                          m('li', { resource: "#subject" }, [
+                              m('label', { for: "subject", about: "#subject" }, 'subject :'),
+                              m('input', { class: "uri", id: "subject", name: "subject", about: "subject", resource: "rdf:subject" })
+                          ]),
+                          m('li', { resource: "#predicate" }, [
+                              m('label', { for: "predicate", about: "#predicate" }, 'predicate :'),
+                              m('input', { class: "uri", id: "predicate", name: "predicate", about: "predicate", resource: "rdf:predicate" })
+                          ]),
+                          m('li', { resource: "#object" }, [
+                              m('label', { for: "object", about: "#object" }, 'object :'),
+                              m('input', { class: "uri", id: "object", name: "object", about: "object", resource: "rdf:object" })
+                          ]),
+                          m('li', { resource: "#graph" }, [
+                              m('label', { for: "graph", about: "#graph" }, 'graph :'),
+                              m('input', { class: "uri", id: "graph", name: "graph", about: "graph", resource: "rdf:graph" })
+                          ])
+                      ])
+                  ]),
+                  m('input', { type: "submit", value: "Find matching triples" })
               ])
-            ]),
-            m('h3', "Matches in JoTinyLDF for"),
-            Main.results.length !== 0 &&
-            m('div', { class: 'counts' }, [
-                "Showing triples ",
-                m('span', { datatype: "xsd:integer" }, startIndex),
-                " to ",
-                m('span', { datatype: "xsd:integer" }, endIndex),
-                " with ",
-                m('span', { datatype: "xsd:integer" }, Main.results.length),
-                " quads per page.",
-                Main.results.length == 50 &&
-                m("a", {
-                    class: "next",
-                    href: "#",
-                    onclick: (e) => {
-                        e.preventDefault();
-                        // Fetch next page using the cursor
-                        Main.fetchNextPage();
-                    }
-                }, "next"),
-            ]),
-            m('div', { class: 'execution-time' }, `Execution time (ms): ${Main.executionTime}`),
-            m('table', {class:'triples'}, [
-              m('thead', [
-                m('tr', [
-                  m('th', "Subject"),
-                  m('th', "Predicate"),
-                  m('th', "Object"),
-                  m('th', "Graph")
-                ])
-              ]),
-              m('tbody', [
-                Main.results && Main.results.map(function(result) {
-                  return m('tr', [
-                    m('td', m('a', {class:"uri", href: result.properties.subject, target: '_blank' }, result.properties.subject)),
-                    m('td', m('a', {class:"uri", href: result.properties.predicate, target: '_blank' }, result.properties.predicate)),
-                    m('td', m('a', {class:"uri", href: result.properties.object, target: '_blank' }, result.properties.object)),
-                    m('td', m('a', {class:"uri", href: result.properties.graph, target: '_blank' }, result.properties.graph))
-                  ]);
-                })
-              ])
-            ]),
-            Main.results.length == 50 &&
-                m("a", {
-                    class: "next",
-                    href: "#",
-                    onclick: (e) => {
-                        e.preventDefault();
-                        // Fetch next page using the cursor
-                        Main.fetchNextPage();
-                    }
-                }, "next"),
-          ]);
+          ]),
+
+          m('h3', "Matches in JoTinyLDF for"),
+
+          // Conditional rendering if we have results
+          (function () {
+              if (Main.results.length !== 0) {
+                  return [
+                      m('div', { class: 'counts' }, [
+                          "Showing triples ",
+                          m('span', { datatype: "xsd:integer" }, startIndex),
+                          " to ",
+                          m('span', { datatype: "xsd:integer" }, endIndex),
+                          " in ",
+                          m('span', { datatype: "xsd:integer" }, Main.executionTime),
+                          " ms.",
+                          Main.results.length === 50 &&
+                          m("a", {
+                              class: "next",
+                              href: "#",
+                              onclick: (e) => {
+                                  e.preventDefault();
+                                  Main.fetchNextPage();
+                              }
+                          }, "next"),
+                      ]),
+                      m('table', { class: 'triples' }, [
+                          m('thead', [
+                              m('tr', [
+                                  m('th', "Subject"),
+                                  m('th', "Predicate"),
+                                  m('th', "Object"),
+                                  m('th', "Graph")
+                              ])
+                          ]),
+                          m('tbody', [
+                              Main.results.map(function (result) {
+                                  return m('tr', [
+                                      m('td', m('a', { class: "uri", href: result.properties.subject, target: '_blank' }, result.properties.subject)),
+                                      m('td', m('a', { class: "uri", href: result.properties.predicate, target: '_blank' }, result.properties.predicate)),
+                                      m('td', m('a', { class: "uri", href: result.properties.object, target: '_blank' }, result.properties.object)),
+                                      m('td', m('a', { class: "uri", href: result.properties.graph, target: '_blank' }, result.properties.graph))
+                                  ]);
+                              })
+                          ])
+                      ]),
+                      Main.results.length === 50 &&
+                      m("a", {
+                          class: "next",
+                          href: "#",
+                          onclick: (e) => {
+                              e.preventDefault();
+                              Main.fetchNextPage();
+                          }
+                      }, "next")
+                  ];
+              } else {
+                  return m('div', { class: 'counts' }, "No quads matching this pattern.");
+              }
+          })()
+        ])
         },
 
         // Store state
@@ -169,7 +177,7 @@
               Main.nextCursor = response.nextPageToken || null;
               Main.currentPage = (cursor && Main.results.length !== 0) ? Main.currentPage + 1 : 0; // Update the current page
               const endTime = performance.now();
-              Main.executionTime = (endTime - startTime).toFixed(2);
+              Main.executionTime = (endTime - startTime).toFixed(0);
               m.redraw();
             })
             .catch(function (error) {
@@ -195,7 +203,7 @@
           const graph = document.getElementById("graph").value.trim();
           Main.fetchData(subject, predicate, object, graph, Main.nextCursor);
         }
-      }
+      };
 
       var NewQuads = {
         authentificated: false,
@@ -287,13 +295,13 @@
             m('p', "Made by Maëlle LE LANNIC, Julien BACQUART, Thomas GIRAUD"),
           ])
         }
-      }
+      };
 
       var TinyLDF = {
         view:function (){ 
           return [m(Header), m(Main), m(NewQuads), m(Footer)]
         }
-      }
+      };
 
       function handleCredentialResponse(response) { 
         const responsePayload = jwt_decode(response.credential);
