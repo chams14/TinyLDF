@@ -10,10 +10,6 @@
   <body>
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <div id="g_id_onload"
-         data-client_id="1070713493928-c7g4vl5i7k6vcbaasgihfnajktpai0ut.apps.googleusercontent.com"
-         data-callback="handleCredentialResponse">
-    </div>
     <div id="tiny"></div>
 
     <script>
@@ -122,12 +118,32 @@
                           ]),
                           m('tbody', [
                               Main.results.map(function (result) {
-                                  return m('tr', [
-                                      m('td', m('a', { class: "uri", href: result.properties.subject, target: '_blank' }, result.properties.subject)),
-                                      m('td', m('a', { class: "uri", href: result.properties.predicate, target: '_blank' }, result.properties.predicate)),
-                                      m('td', m('a', { class: "uri", href: result.properties.object, target: '_blank' }, result.properties.object)),
-                                      m('td', m('a', { class: "uri", href: result.properties.graph, target: '_blank' }, result.properties.graph))
-                                  ]);
+                                return m('tr', [
+                                  m('td', m('a', {class:"uri", onclick:()=>{document.getElementById("subject").value=result.properties.subject;
+                                                                            document.getElementById("predicate").value="";
+                                                                            document.getElementById("object").value="";
+                                                                            document.getElementById("graph").value="";
+                                                                            Main.fetchData(result.properties.subject, "", "", "");
+                                                                            }}, result.properties.subject)),
+                                  m('td', m('a', {class:"uri", onclick:()=>{document.getElementById("predicate").value=result.properties.predicate;
+                                                                            document.getElementById("subject").value="";
+                                                                            document.getElementById("object").value="";
+                                                                            document.getElementById("graph").value="";
+                                                                            Main.fetchData("", result.properties.predicate, "", "");
+                                                                            }}, result.properties.predicate)),
+                                  m('td', m('a',{class:"uri", onclick:()=>{document.getElementById("object").value=result.properties.object;
+                                                                            document.getElementById("subject").value="";
+                                                                            document.getElementById("predicate").value="";
+                                                                            document.getElementById("graph").value="";
+                                                                            Main.fetchData("", "", result.properties.object, "");
+                                                                            }}, result.properties.object)),
+                                  m('td', m('a',{class:"uri", onclick:()=>{document.getElementById("graph").value=result.properties.graph;
+                                                                            document.getElementById("subject").value="";
+                                                                            document.getElementById("predicate").value="";
+                                                                            document.getElementById("object").value="";
+                                                                            Main.fetchData("", "", "", result.properties.graph);
+                                                                            }}, result.properties.graph))
+                                ]);
                               })
                           ])
                       ]),
@@ -316,8 +332,8 @@
           .then(data => {
             NewQuads.authentificated=true;
             NewQuads.accessToken = response.credential;
-            /*console.log("User logged in : "+ responsePayload.given_name);
-            console.log("Token : "+ response.credential);*/
+            // console.log("User logged in : "+ responsePayload.given_name);
+            // console.log("Token : "+ response.credential);
             Header.user = responsePayload.given_name;
             Header.userPhoto = responsePayload.picture;
             m.redraw();
